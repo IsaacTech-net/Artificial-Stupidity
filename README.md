@@ -6,8 +6,9 @@ Artificial Stupidity is a Python module that implements a Markov Chain Style Tex
 
 Use pip to install the module:
 
-```pip install ArtificialStupidity```
-
+```
+We are currently waiting for PyPI to be open to new package creation. Until then, please simpily download this repository and place the ArtificialStupidity directory into your working directory.
+```
 ## How To Use
 
 ### 1. Import the Module
