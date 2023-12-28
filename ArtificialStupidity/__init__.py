@@ -58,6 +58,9 @@ class Node:
         
         if not self.begin and not self.end and self.token == __value.token:
             return True
+            
+    def __hash__(self) -> int:
+        return hash((self.token, self.begin, self.end))
 
 class Edge:
     def __init__(self, target: Node) -> None:
@@ -69,6 +72,7 @@ class NewAI:
         begin_node = Node(None)
         begin_node.begin = True
         self.begin = begin_node
+        self._index = {}
 
     def _save_nodes(self, nodes, edges, cur_node, ic, jc, visited):
         i = next(ic)
@@ -141,25 +145,12 @@ class NewAI:
             if _node.begin:
                 self.begin = _node
 
-
-    def _find_node(self, search_node: Node, prev_node: Node, _prev_node: Node, cur_node: Node, visited: list):
-        if cur_node in visited:
-            return None
-        if cur_node == search_node and _prev_node == prev_node:
-            return cur_node
-        
-        visited.append(cur_node)
-        
-        for edge in cur_node.edges:
-            result = self._find_node(search_node, prev_node, cur_node, edge.target, visited)
-            if result:
-                return result
-            
-        return None
+            self._index[hash(_node)] = _node
 
     def find_node(self, node: Node, prev_node: Node):
-        visited = []
-        return self._find_node(node, prev_node, None, self.begin, visited)
+        if hash(node) in self._index:
+            return self._index[hash(node)]
+        return None
 
     def add_node(self, prev_node: Node, cur_token: str, end: bool = False) -> Node:
         for edge in prev_node.edges:
@@ -172,6 +163,7 @@ class NewAI:
             node = self.find_node(_node, prev_node)
             if not node:
                 node = _node
+                self._index[hash(node)] = node
             new_edge = Edge(node)
             prev_node.edges.append(new_edge)
 
